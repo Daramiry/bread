@@ -3,16 +3,27 @@ const breads = express.Router()
 const Bread = require('../models/bread.js')
 
 // INDEX
-// INDEX
-breads.get('/', (req, res) => {
-  res.render('Index',
-    {
-      breads: Bread,
-      title: 'Index Page'
-    }
-  )
+breads.get('/:id', (req, res) => {
+  Bread.findById(req.params.id)
+    .then(ojundBread => {
+      res.render('show', {
+        bread: foundBread
+      })
+    })
 })
 
+breads.post('/', (req, res) => {
+  if(!req.body.image) {
+    req.body.image = undefined
+  }
+  if(req.body.hasGluten === 'on') {
+    req.body.hasGluten = true
+  } else {
+    req.body.hasGluten = false 
+  }
+  Bread.create(req.body)
+  res.redirect('/breads')
+})
 
 // SHOW
 breads.get('/:arrayIndex', (req, res) => {
